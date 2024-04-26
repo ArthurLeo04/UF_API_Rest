@@ -4,65 +4,63 @@ using System.Data.SqlClient;
 
 public class Matchmaking
 {
-    static void GetPlayerRank()
-}
-
-public class Program
-{
-    static void Main()
+    static Guid TempGetPlayerId(string player_name)
     {
-        string connectionString = "Votre_chaine_de_connexion"; // Remplacez par votre propre chaîne de connexion
-
+        // Connexion à la base de données
+        string connectionString = "Server=localhost;Port=5432;Database=my_api_rest;User Id=me;Password=password";
+        
+        // Get id from user
+        Guid playerId = null; // Le retour
+        
         using (SqlConnection connection = new SqlConnection(connectionString))
         {
             connection.Open();
 
-            // Exemple de requête SELECT
-            string selectQuery = "SELECT * FROM VotreTable";
-            DataTable dataTable = ExecuteQuery(connection, selectQuery);
-
-            // Traiter les résultats
-            foreach (DataRow row in dataTable.Rows)
+            string query = $"SELECT id FROM users WHERE name = '{player_name}'";
+            // Exécutez la requête et récupérez l'ID du joueur qui est un string
+            using (SqlCommand command = new SqlCommand(query, connection))
             {
-                // Accéder aux colonnes comme ceci
-                int id = (int)row["ID"];
-                string name = (string)row["Nom"];
-
-                Console.WriteLine($"ID: {id}, Nom: {name}");
+                playerId = (Guid)command.ExecuteScalar();
             }
 
-            // Exemple de requête INSERT
-            string insertQuery = "INSERT INTO VotreTable (Nom, Age) VALUES ('John Doe', 30)";
-            int rowsAffected = ExecuteNonQuery(connection, insertQuery);
+            Console.WriteLine($"L'ID du joueur avec le nom {player_name} est {playerId}");
+            
+            connection.Close();
+            
+        }
+        
+        return playerId;
+    }
+    
+    static string GetPlayerRank(Guid playerId)
+    {
+        string connectionString = "Server=localhost;Port=5432;Database=my_api_rest;User Id=me;Password=password";
+        string rank = null; // Le retour
+        
+        using (SqlConnection connection = new SqlConnection(connectionString))
+        {
+            connection.Open();
 
-            Console.WriteLine($"Nombre de lignes affectées: {rowsAffected}");
+            string query = $"SELECT rank FROM users WHERE Id = '{playerId}'";
+            // Exécutez la requête et récupérez le rang du joueur qui est un string
+            using (SqlCommand command = new SqlCommand(query, connection))
+            {
+                rank = (string)command.ExecuteScalar();
+            }
+
+            Console.WriteLine($"Le rang du joueur avec l'ID {playerId} est {rank}");
 
             connection.Close();
+            
         }
+        
+        return rank;
     }
 
-    // Méthode pour exécuter une requête SELECT et renvoyer les résultats sous forme de DataTable
-    private static DataTable ExecuteQuery(SqlConnection connection, string query)
+    static void Main()
     {
-        DataTable dataTable = new DataTable();
-
-        using (SqlCommand command = new SqlCommand(query, connection))
-        {
-            using (SqlDataAdapter adapter = new SqlDataAdapter(command))
-            {
-                adapter.Fill(dataTable);
-            }
-        }
-
-        return dataTable;
-    }
-
-    // Méthode pour exécuter une requête INSERT, UPDATE, DELETE, etc. et renvoyer le nombre de lignes affectées
-    private static int ExecuteNonQuery(SqlConnection connection, string query)
-    {
-        using (SqlCommand command = new SqlCommand(query, connection))
-        {
-            return command.ExecuteNonQuery();
-        }
+        // Execute la fonction GetPlayerRank avec un ID de joueur spécifique
+        Guid playerId = TempGetPlayerId("me");
+        string playerRank = GetPlayerRank(playerId);
     }
 }
