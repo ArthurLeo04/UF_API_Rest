@@ -1,0 +1,16 @@
+{
+  "version": 2,
+  "dgSpecHash": "TpdUnb8s0ebnzuWu1+Tf2YU6uvyCp0RGhBENpf99VOxbYAdkTn1DaYkFCNCphE5EqsgaxuLx9VgX68HC9f1YEA==",
+  "success": true,
+  "projectFilePath": "D:\\1-DEV\\UE5\\PROJECTS\\UQAC\\Online\\GitRepo\\UF_API_Rest\\ONLINE_API_REST_ASPNETCORE\\ONLINE_API_REST_ASPNETCORE\\ONLINE_API_REST_ASPNETCORE.csproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\axant\\.nuget\\packages\\microsoft.extensions.apidescription.server\\6.0.5\\microsoft.extensions.apidescription.server.6.0.5.nupkg.sha512",
+    "C:\\Users\\axant\\.nuget\\packages\\microsoft.openapi\\1.2.3\\microsoft.openapi.1.2.3.nupkg.sha512",
+    "C:\\Users\\axant\\.nuget\\packages\\microsoft.visualstudio.azure.containers.tools.targets\\1.19.4\\microsoft.visualstudio.azure.containers.tools.targets.1.19.4.nupkg.sha512",
+    "C:\\Users\\axant\\.nuget\\packages\\swashbuckle.aspnetcore\\6.5.0\\swashbuckle.aspnetcore.6.5.0.nupkg.sha512",
+    "C:\\Users\\axant\\.nuget\\packages\\swashbuckle.aspnetcore.swagger\\6.5.0\\swashbuckle.aspnetcore.swagger.6.5.0.nupkg.sha512",
+    "C:\\Users\\axant\\.nuget\\packages\\swashbuckle.aspnetcore.swaggergen\\6.5.0\\swashbuckle.aspnetcore.swaggergen.6.5.0.nupkg.sha512",
+    "C:\\Users\\axant\\.nuget\\packages\\swashbuckle.aspnetcore.swaggerui\\6.5.0\\swashbuckle.aspnetcore.swaggerui.6.5.0.nupkg.sha512"
+  ],
+  "logs": []
+}
