@@ -3,3 +3,10 @@
 
 # Les fichiers VS
 .vs
+*.sln
+
+# Les fichiers vs code
+.vscode
+
+# Un test de ma part (léo)
+ConsoleApp/
