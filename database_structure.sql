@@ -5,7 +5,7 @@
 -- Dumped from database version 16.2
 -- Dumped by pg_dump version 16.2
 
--- Started on 2024-04-26 14:33:05
+-- Started on 2024-04-26 14:35:22
 
 SET statement_timeout = 0;
 SET lock_timeout = 0;
@@ -338,7 +338,7 @@ ALTER TABLE ONLY public.users
 GRANT ALL ON SCHEMA public TO me;
 
 
--- Completed on 2024-04-26 14:33:10
+-- Completed on 2024-04-26 14:35:25
 
 --
 -- PostgreSQL database dump complete
