@@ -20,8 +20,7 @@ CREATE USER me WITH PASSWORD 'password';
 CREATE DATABASE my_api_rest;
 GRANT ALL PRIVILEGES ON DATABASE my_api_rest TO me;
 GRANT ALL PRIVILEGES ON SCHEMA public TO me;
-GRANT ALL PRIVILEGES ON TABLE public.roles TO me;
-GRANT ALL PRIVILEGES ON TABLE public.users TO me;
+GRANT ALL PRIVILEGES ON ALL TABLES IN SCHEMA public TO me;
 ```
 
 Vous devriez maintenant être en capacité d'executez depuis un terminal (pas dans postgres) les commandes suivantes :
