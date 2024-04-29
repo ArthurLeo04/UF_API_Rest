@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using WebApplication1.Models;
+using WebApplication1.Data;
 using Npgsql;
 using Microsoft.Extensions.Configuration;
 using System.Reflection.Emit;
