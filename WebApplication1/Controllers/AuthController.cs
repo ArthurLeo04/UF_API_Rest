@@ -3,11 +3,14 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using System;
 using System.Linq;
+using System.IdentityModel.Tokens.Jwt;
 using System.Security.Cryptography;
 using System.Text;
 using WebApplication1.Data;
 using WebApplication1.Models;
 using WebApplication1.DTOs;
+using System.Security.Claims;
+using Microsoft.IdentityModel.Tokens;
 
 namespace WebApplication1.Controllers
 {
@@ -16,10 +19,12 @@ namespace WebApplication1.Controllers
     public class AuthController : ControllerBase
     {
         private readonly DatabaseContext _context;
+        private readonly IConfiguration _config;
 
-        public AuthController(DatabaseContext context)
+        public AuthController(DatabaseContext context, IConfiguration config)
         {
             _context = context;
+            _config = config;
         }
 
         [HttpPost("register")]
@@ -55,20 +60,34 @@ namespace WebApplication1.Controllers
         {
             var user = _context.Users.FirstOrDefault(u => u.Username == userForLoginDto.Username);
             if (user == null)
-            {
                 return Unauthorized();
-            }
 
             byte[] salt = Convert.FromBase64String(user.Salt);
             byte[] hashedPassword = HashPassword(userForLoginDto.Password, salt);
             string hashedPasswordString = Convert.ToBase64String(hashedPassword);
 
             if (user.Password != hashedPasswordString)
-            {
                 return Unauthorized();
-            }
 
-            return Ok("Authentication successful");
+            // Authentication successful, generate JWT token
+            var tokenHandler = new JwtSecurityTokenHandler();
+            var key = Encoding.ASCII.GetBytes(_config["Jwt:Secret"]);
+
+            var tokenDescriptor = new SecurityTokenDescriptor
+            {
+                Subject = new ClaimsIdentity(new Claim[]
+                {
+                    new Claim(ClaimTypes.Name, user.Username),
+                    // Add additional claims as needed
+                }),
+                Expires = DateTime.UtcNow.AddHours(1), // Token expiration time
+                SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
+            };
+
+            var token = tokenHandler.CreateToken(tokenDescriptor);
+            var tokenString = tokenHandler.WriteToken(token);
+
+            return Ok(new { Token = tokenString });
         }
 
         private byte[] GenerateSalt()
