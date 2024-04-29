@@ -1,6 +1,7 @@
 // ServerCachingController.cs
 
 using System.Text.Json;
+using Humanizer;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using StackExchange.Redis;
@@ -72,27 +73,62 @@ namespace WebApplication1.Controllers
         }
 
         [HttpPost]
-        public IActionResult SetToCache(string key, [FromBody] ServerCaching value)
+        public IActionResult SetToCache([FromBody] ServerCaching value)
         {
             var rDb = _redisConnection.GetDatabase();
+            
+            // Generate a unique key
+            var key = GenerateUniqueKey();
+
             var serializedValue = JsonConvert.SerializeObject(value);
             rDb.StringSet(key, serializedValue);
-            return Ok();
+
+            // Create an anonymous object with the "key" field
+            var response = new { key = key };
+
+            return Ok(response);
         }
 
-        [HttpPut("update/{key}")]
+        private String GenerateUniqueKey()
+        {
+            // Create a unique key using a combinaison of timestamp and randomNumber
+            var timestamp = DateTime.Now.ToString("yyyyMMddHHmmssfff");
+            var random = Guid.NewGuid().ToString("N").Substring(0, 6);
+            var key = timestamp+random;
+
+            return key;
+        }
+
+        [HttpPatch("update/{key}")]
         public async Task<IActionResult> UpdateEntry(string key, [FromBody] ServerCaching newServerCaching)
         {
             try
             {
                 var rDb = _redisConnection.GetDatabase();
 
-                // Serialize the newServerCaching object
-                var serializedValue = JsonConvert.SerializeObject(newServerCaching);
+                // Retrive the existing ServerCaching object from Redis
+                var existingValue = await rDb.StringGetAsync(key);
 
-                await rDb.StringSetAsync(key, serializedValue);
+                if(existingValue.HasValue)
+                {
+                    // Deserialize the existing ServerCaching object
+                    var existingServerCaching = JsonConvert.DeserializeObject<ServerCaching>(existingValue);
 
-                return Ok();
+                    // Update the nbPlayer attribute with the new value
+                    existingServerCaching.PlayerNumber = newServerCaching.PlayerNumber;
+
+                    // Serialize the modified ServerCaching object
+                    var serializedValue = JsonConvert.SerializeObject(existingServerCaching);
+
+                    // Store the modified object back in Redis
+                    await rDb.StringSetAsync(key, serializedValue);
+
+                    return Ok();
+                }
+                else
+                {
+                    return NotFound();
+                }
             }
             catch(Exception ex)
             {
