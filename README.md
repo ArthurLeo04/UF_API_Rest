@@ -30,10 +30,20 @@ psql -U postgres -d my_api_rest -f database_structure.sql
 # Exporter
 pg_dump -U me -d my_api_rest -s -f database_structure.sql
 ```
+
 > [!NOTE]
 > Il est possible de faire ces commandes directement dans pgAdmin. Pour ce faire une fois le logiciel ouvert, vous pouvez faire clic droit dans l'architecture à gauche et sur l'onglet *Query Tool*. Vous pouvez maintenant rentrer et lancer des commandes sans passer par le shell.
 
+Pour clear tout la base de donnée, vous pouvez utiliser la commande suivante :
+```
+DROP SCHEMA public CASCADE;
+CREATE SCHEMA public;
+```
+N'oubliez juste pas de redonner les droits sur toutes les tables à l'utilisateur administrateur ensuite.
+
 ## REDIS
+
+Pour lancer l'api, il est maintenant néscessaire de lancer un redis. Pour ce faire vous devez avoir au préalable lancer docker. Que vous devez donc installer.
 
 ### Lancer un redis de test dans un Docker
 ```shell

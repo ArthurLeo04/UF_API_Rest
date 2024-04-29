@@ -26,6 +26,9 @@ namespace WebApplication1.Data
                 new Roles { Role = "client" },
                 new Roles { Role = "server" }
             );
+
+            // Set primary key for roles
+            modelBuilder.Entity<Roles>().HasKey(r => r.Role);
         }
     }
 }
