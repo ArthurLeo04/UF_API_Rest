@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using WebApplication1.Models;
 
@@ -17,6 +18,7 @@ namespace WebApplication1.Controllers
 
         // GET: api/Users
         [HttpGet]
+        //[Authorize(Roles = "Server")] // Faudra ajouter ça un peut partout
         public ActionResult<IEnumerable<Users>> GetUsers()
         {
             return _context.Users.ToList();
