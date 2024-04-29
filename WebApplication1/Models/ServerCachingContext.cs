@@ -3,12 +3,13 @@ using WebApplication1.Models;
 
 namespace WebApplication1.Models
 {
-    public class RanksContext : DbContext
+    public class ServerCachingContext : DbContext
     {
-        public RanksContext(DbContextOptions<RanksContext> options) : base(options)
+        public ServerCachingContext(DbContextOptions<ServerCachingContext> options) : base(options)
         {
         }
-        public DbSet<WebApplication1.Models.Ranks> Ranks { get; set; } = default!;
+        public DbSet<Users> Users { get; set; } = default!; // To get match for player
+        public DbSet<Ranks> Ranks { get; set; } = default!; // To get rank for player
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

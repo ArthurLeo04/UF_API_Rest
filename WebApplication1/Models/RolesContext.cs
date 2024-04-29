@@ -9,5 +9,12 @@ namespace WebApplication1.Models
         {
         }
         public DbSet<WebApplication1.Models.Roles> Roles { get; set; } = default!;
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            // Set primary key for Roles
+            modelBuilder.Entity<Roles>()
+                .HasKey(r => r.Role);
+        }
     }
 }
