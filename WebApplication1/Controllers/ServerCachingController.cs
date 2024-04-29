@@ -2,6 +2,7 @@
 
 using System.Text.Json;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
 using StackExchange.Redis;
 using WebApplication1.Models;
@@ -13,10 +14,12 @@ namespace WebApplication1.Controllers
     public class ServerCachingController : ControllerBase
     {
         private readonly IConnectionMultiplexer _redisConnection;
+        private readonly ServerCachingContext _context;
 
-        public ServerCachingController(IConnectionMultiplexer redisConnection)
+        public ServerCachingController(IConnectionMultiplexer redisConnection, ServerCachingContext context)
         {
             _redisConnection = redisConnection ?? throw new ArgumentNullException(nameof(redisConnection));
+            _context = context;
         }
 
         [HttpGet("entries")]
@@ -67,8 +70,72 @@ namespace WebApplication1.Controllers
             }
 
             var serverCaching = JsonConvert.DeserializeObject<ServerCaching>(json);
-            
+
             return Ok(serverCaching);
+        }
+
+        private decimal RankToFloat(string rank)
+        {
+            if (rank == "Bronze")
+            {
+                return 10;
+            }
+            else if (rank == "Silver")
+            {
+                return 20;
+            }
+            else if (rank == "Gold")
+            {
+                return 30;
+            }
+            else if (rank == "Platinum")
+            {
+                return 40;
+            }
+            else if (rank == "Diamond")
+            {
+                return 50;
+            }
+            else
+            {
+                return 0;
+            }
+        }
+
+        // GET: api/ServerCaching/Matchmaking/5
+        [HttpGet("Matchmaking/{id}")]
+        public async Task<IActionResult> GetUsersMatch(Guid id)
+        {
+            var users = _context.Users.Find(id);
+
+            if (users == null)
+            {
+                return NotFound();
+            }
+
+            decimal userPoints = RankToFloat(users.Rank) 
+                + (users.KDRatio * 10 -5); // Membre lié au kill/death ratio
+
+            // Get all servers from redis using function GetAllEntries
+            var result = await GetAllEntries();
+            
+            if (result is OkObjectResult okObjectResult)
+            {
+                if (okObjectResult.Value is not Dictionary<string, ServerCaching> entries)
+                {
+                    return StatusCode(500, "Result is not a dictionary");
+                }
+
+                // Trouve le serveur dans le dictionnaire entries qui a la valeur la plus proche de userPoints et avec un nombre de joueurs inférieur à N
+                var bestServer = entries.Values
+                    .Where(server => server.PlayerNumber < 6) // N = 6, hardcodé ici, mais pourrait être un paramètre
+                    .OrderBy(server => Math.Abs(RankToFloat(server.AverageRank) - userPoints))
+                    .FirstOrDefault();
+
+                return Ok(bestServer);
+            }
+
+            return result; // On propage le message d'erreur
         }
 
         [HttpPost]

@@ -28,6 +28,8 @@ builder.Services.AddDbContext<AchievementsContext>(options =>
     options.UseNpgsql(connectionString));
 builder.Services.AddDbContext<UserAchievementsContext>(options =>
     options.UseNpgsql(connectionString));
+builder.Services.AddDbContext<ServerCachingContext>(options =>
+    options.UseNpgsql(connectionString));
 
 // Redis
 builder.Services.AddSingleton<IConnectionMultiplexer>(ConnectionMultiplexer.Connect("localhost"));
