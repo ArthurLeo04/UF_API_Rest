@@ -60,8 +60,8 @@ ALTER TABLE public.achievements OWNER TO postgres;
 --
 
 CREATE TABLE public.friend_requests (
-    user1 uuid NOT NULL,
-    user2 uuid NOT NULL
+    sender uuid NOT NULL,
+    receiver uuid NOT NULL
 );
 
 
@@ -229,7 +229,7 @@ ALTER TABLE ONLY public.achievements
 --
 
 ALTER TABLE ONLY public.friend_requests
-    ADD CONSTRAINT friend_requests_pkey PRIMARY KEY (user1, user2);
+    ADD CONSTRAINT friend_requests_pkey PRIMARY KEY (sender, receiver);
 
 
 --
@@ -342,11 +342,11 @@ ALTER TABLE ONLY public.friends
 
 --
 -- TOC entry 4757 (class 2606 OID 16569)
--- Name: friend_requests user1_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+-- Name: friend_requests sender_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
 ALTER TABLE ONLY public.friend_requests
-    ADD CONSTRAINT user1_fkey FOREIGN KEY (user1) REFERENCES public.users(id);
+    ADD CONSTRAINT sender_fkey FOREIGN KEY (sender) REFERENCES public.users(id);
 
 
 --
@@ -360,11 +360,11 @@ ALTER TABLE ONLY public.friends
 
 --
 -- TOC entry 4758 (class 2606 OID 16574)
--- Name: friend_requests user2_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+-- Name: friend_requests receiver_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
 ALTER TABLE ONLY public.friend_requests
-    ADD CONSTRAINT user2_fkey FOREIGN KEY (user2) REFERENCES public.users(id);
+    ADD CONSTRAINT receiver_fkey FOREIGN KEY (receiver) REFERENCES public.users(id);
 
 
 --

@@ -32,6 +32,8 @@ builder.Services.AddDbContext<ServerCachingContext>(options =>
     options.UseNpgsql(connectionString));
 builder.Services.AddDbContext<RolesContext>(options =>
     options.UseNpgsql(connectionString));
+builder.Services.AddDbContext<FriendRequestsContext>(options =>
+    options.UseNpgsql(connectionString));
 
 // Redis
 builder.Services.AddSingleton<IConnectionMultiplexer>(ConnectionMultiplexer.Connect("localhost"));
