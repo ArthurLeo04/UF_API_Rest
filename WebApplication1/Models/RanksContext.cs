@@ -9,5 +9,12 @@ namespace WebApplication1.Models
         {
         }
         public DbSet<WebApplication1.Models.Ranks> Ranks { get; set; } = default!;
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            // Set primary key for Ranks
+            modelBuilder.Entity<Ranks>()
+                .HasKey(r => r.Rank);
+        }
     }
 }

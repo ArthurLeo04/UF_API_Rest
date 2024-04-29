@@ -141,6 +141,15 @@ namespace WebApplication1.Controllers
         [HttpPost]
         public IActionResult SetToCache(string key, [FromBody] ServerCaching value)
         {
+            // Check if the rank is in _context.Ranks
+            var rank = _context.Ranks.Where(r => r.Rank == value.AverageRank);
+
+            if (!rank.Any())
+            {
+                // Return a 400 error if the rank is not in the database
+                return BadRequest("The rank is not in the database");
+            }
+
             var rDb = _redisConnection.GetDatabase();
             var serializedValue = JsonConvert.SerializeObject(value);
             rDb.StringSet(key, serializedValue);

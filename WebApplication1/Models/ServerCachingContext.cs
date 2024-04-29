@@ -9,5 +9,13 @@ namespace WebApplication1.Models
         {
         }
         public DbSet<Users> Users { get; set; } = default!; // To get match for player
+        public DbSet<Ranks> Ranks { get; set; } = default!; // To get rank for player
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            // Set primary key for Ranks
+            modelBuilder.Entity<Ranks>()
+                .HasKey(r => r.Rank);
+        }
     }
 }
