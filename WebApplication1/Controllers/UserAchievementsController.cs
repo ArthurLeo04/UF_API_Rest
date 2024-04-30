@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using WebApplication1.Data;
 using WebApplication1.Models;
 
 namespace WebApplication1.Controllers
@@ -21,10 +22,19 @@ namespace WebApplication1.Controllers
             return _context.UserAchievements.ToList();
         }
 
-        // GET: api/UserAchievements/User=5
-        [HttpGet("User={user}")]
-        public ActionResult<IEnumerable<Achievements>> GetAchievementsByUser(Guid user) // Get all achievements of a user
+        // GET: api/UserAchievements
+        [HttpPost]
+        public ActionResult<IEnumerable<Achievements>> GetAchievementsByUser([FromBody] Dictionary<String, String> token)
         {
+            var userToken = TokenParser.ParseToken(token["token"]);
+
+            if (userToken == null || !TokenParser.IsClient(userToken))
+            {
+                return Unauthorized();
+            }
+
+            Guid user = TokenParser.GetUserId(userToken);
+
             var userAchievements = _context.UserAchievements
                 .Where(ua => ua.IdUser == user)
                 .Select(ua => ua.IdAchievement)
@@ -41,7 +51,7 @@ namespace WebApplication1.Controllers
 
             return achievements;
         }
-
+       
         // POST: api/UserAchievements
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]

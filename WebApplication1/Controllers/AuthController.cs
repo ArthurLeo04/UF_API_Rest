@@ -1,16 +1,13 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
-using System;
-using System.Linq;
+using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
 using WebApplication1.Data;
-using WebApplication1.Models;
 using WebApplication1.DTOs;
-using System.Security.Claims;
-using Microsoft.IdentityModel.Tokens;
+using WebApplication1.Models;
 
 namespace WebApplication1.Controllers
 {

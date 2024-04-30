@@ -1,9 +1,6 @@
 // ServerCachingController.cs
 
-using System.Text.Json;
-using Humanizer;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
 using StackExchange.Redis;
 using WebApplication1.Models;
