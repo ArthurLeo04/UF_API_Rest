@@ -1,6 +1,5 @@
-﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
-using System.Security.Claims;
+﻿using Microsoft.AspNetCore.Mvc;
+using WebApplication1.Data;
 using WebApplication1.Models;
 
 namespace WebApplication1.Controllers
@@ -19,17 +18,19 @@ namespace WebApplication1.Controllers
         }
 
         // GET: api/FriendRequests/Received
-        [HttpGet("Received")]
-        [Authorize(Roles = "client")]
-        public ActionResult<IEnumerable<Users>> GetFriendRequestsReceived()
+        [HttpPost("Received")]
+        public ActionResult<IEnumerable<Users>> GetFriendRequestsReceived([FromBody] Dictionary<String, String> token)
         {
             // Donne la liste des demandes d'amis que j'ai reçu en tant qu'utilisateur
 
-            // Get the NameIdentifier claim from httpContextAccessor
-            var user = _httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value;
+            var userToken = TokenParser.ParseToken(token["token"]);
 
-            // Cast the string to Guid
-            Guid userId = Guid.Parse(user);
+            if (userToken == null || !TokenParser.IsClient(userToken))
+            {
+                return Unauthorized();
+            }
+
+            Guid userId = TokenParser.GetUserId(userToken);
 
             var friendRequests = _context.FriendRequests
             .Where(f => f.Receiver == userId)
@@ -44,12 +45,21 @@ namespace WebApplication1.Controllers
             return friendRequestsList;
         }
 
-        // GET: api/FriendRequests/Sent/5
-        [HttpGet("Sent/{user}")]
-        public ActionResult<IEnumerable<Users>> GetFriendRequestsSent(Guid user)
+        // POST: api/FriendRequests/Sent
+        [HttpPost("Sent")]
+        public ActionResult<IEnumerable<Users>> GetFriendRequestsSent([FromBody] Dictionary<String, String> token)
         {
+            var userToken = TokenParser.ParseToken(token["token"]);
+
+            if (userToken == null || !TokenParser.IsClient(userToken))
+            {
+                return Unauthorized();
+            }
+
+            Guid userId = TokenParser.GetUserId(userToken);
+
             var friendRequests = _context.FriendRequests
-            .Where(f => f.Sender == user)
+            .Where(f => f.Sender == userId)
             .Select(f => f.Receiver)
             .ToList();
 

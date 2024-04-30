@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using WebApplication1.Data;
 using WebApplication1.Models;
 
 namespace WebApplication1.Controllers
@@ -21,10 +22,19 @@ namespace WebApplication1.Controllers
             return _context.Friends.ToList();
         }
 
-        // GET: api/Friends/5
-        [HttpGet("{user}")]
-        public ActionResult<IEnumerable<Users>> GetFriendsById(Guid user)
+        // GET: api/Friends
+        [HttpPost("GetFriendsByUser")]
+        public ActionResult<IEnumerable<Users>> GetFriendsByUser([FromBody] Dictionary<String, String> token)
         {
+            var userToken = TokenParser.ParseToken(token["token"]);
+
+            if (userToken == null || !TokenParser.IsClient(userToken))
+            {
+                return Unauthorized();
+            }
+
+            Guid user = TokenParser.GetUserId(userToken);
+
             var friends = _context.Friends
             .Where(f => f.User1 == user || f.User2 == user)
             .ToList();
