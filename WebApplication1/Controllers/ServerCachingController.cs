@@ -3,6 +3,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using StackExchange.Redis;
+using WebApplication1.Data;
 using WebApplication1.Models;
 
 namespace WebApplication1.Controllers
@@ -100,10 +101,19 @@ namespace WebApplication1.Controllers
             }
         }
 
-        // GET: api/ServerCaching/Matchmaking/5
-        [HttpGet("Matchmaking/{id}")]
-        public async Task<IActionResult> GetUsersMatch(Guid id)
+        // POST: api/ServerCaching/Matchmaking
+        [HttpPost("Matchmaking")]
+        public async Task<IActionResult> GetUsersMatch([FromBody] Dictionary<string, string> user)
         {
+            var userToken = TokenParser.ParseToken(user["token"]);
+
+            if (userToken == null || !TokenParser.IsClient(userToken))
+            {
+                return Unauthorized();
+            }
+
+            Guid id = TokenParser.GetUserId(userToken);
+
             var users = _context.Users.Find(id);
 
             if (users == null)

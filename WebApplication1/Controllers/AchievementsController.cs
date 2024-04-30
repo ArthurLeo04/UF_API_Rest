@@ -17,7 +17,6 @@ namespace WebApplication1.Controllers
 
         // GET: api/Achievements
         [HttpGet]
-        [Authorize(Roles = "server")]
         public ActionResult<IEnumerable<Achievements>> GetAchievements()
         {
             return _context.Achievements.ToList();
@@ -25,7 +24,6 @@ namespace WebApplication1.Controllers
 
         // GET: api/Achievements/5
         [HttpGet("{id}")]
-        [Authorize(Roles = "server")]
         public ActionResult<Achievements> GetAchievementsById(Guid id)
         {
             var achievements = _context.Achievements.Find(id);
