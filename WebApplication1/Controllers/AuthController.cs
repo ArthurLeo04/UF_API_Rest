@@ -15,7 +15,7 @@ using Microsoft.IdentityModel.Tokens;
 namespace WebApplication1.Controllers
 {
     [ApiController]
-    [Route("api/[controller]")]
+    [Route("api/Auth")]
     public class AuthController : ControllerBase
     {
         private readonly DatabaseContext _context;
@@ -28,11 +28,16 @@ namespace WebApplication1.Controllers
         }
 
         [HttpPost("register")]
-        public IActionResult Register(UserForRegisterDto userForRegisterDto)
+        public IActionResult Register([FromBody] UserForRegisterDto userForRegisterDto)
         {
             if (_context.Users.Any(u => u.Username == userForRegisterDto.Username))
             {
                 return Conflict("Username already exists");
+            }
+
+            if(_context.Users.Any(u => u.Email == userForRegisterDto.Email))
+            {
+                return Conflict("Email already associated to another user");
             }
 
             byte[] salt = GenerateSalt();
