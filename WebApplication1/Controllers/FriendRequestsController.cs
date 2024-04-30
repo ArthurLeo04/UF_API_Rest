@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 using WebApplication1.Models;
 
 namespace WebApplication1.Controllers
@@ -8,25 +10,29 @@ namespace WebApplication1.Controllers
     public class FriendRequestsController : ControllerBase
     {
         private readonly FriendRequestsContext _context;
+        private readonly IHttpContextAccessor _httpContextAccessor;
 
-        public FriendRequestsController(FriendRequestsContext context)
+        public FriendRequestsController(FriendRequestsContext context, IHttpContextAccessor httpContextAccessor)
         {
             _context = context;
+            _httpContextAccessor = httpContextAccessor;
         }
 
-        // GET: api/FriendRequests
-        [HttpGet]
-        public ActionResult<IEnumerable<FriendRequests>> GetFriendRequests()
+        // GET: api/FriendRequests/Received
+        [HttpGet("Received")]
+        [Authorize(Roles = "client")]
+        public ActionResult<IEnumerable<Users>> GetFriendRequestsReceived()
         {
-            return _context.FriendRequests.ToList();
-        }
+            // Donne la liste des demandes d'amis que j'ai reçu en tant qu'utilisateur
 
-        // GET: api/FriendRequests/Received/5
-        [HttpGet("Received/{user}")]
-        public ActionResult<IEnumerable<Users>> GetFriendRequestsReceived(Guid user)
-        {
+            // Get the NameIdentifier claim from httpContextAccessor
+            var user = _httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value;
+
+            // Cast the string to Guid
+            Guid userId = Guid.Parse(user);
+
             var friendRequests = _context.FriendRequests
-            .Where(f => f.Receiver == user)
+            .Where(f => f.Receiver == userId)
             .Select(f => f.Sender)
             .ToList();
 
@@ -63,7 +69,7 @@ namespace WebApplication1.Controllers
             _context.FriendRequests.Add(friendRequests);
             _context.SaveChanges();
 
-            return CreatedAtAction(nameof(GetFriendRequests), new { id = friendRequests.Sender }, friendRequests);
+            return CreatedAtAction(nameof(GetFriendRequestsSent), friendRequests);
         }
 
         // DELETE: api/FriendRequests/5/4
