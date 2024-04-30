@@ -61,6 +61,14 @@ namespace WebApplication1.Controllers
             var user = _context.Users.FirstOrDefault(u => u.Username == userForLoginDto.Username);
             if (user == null)
                 return Unauthorized();
+            if (string.IsNullOrEmpty(user.Salt))
+            {
+                return BadRequest("Salt is missing for the user");
+            }
+            if (string.IsNullOrEmpty(userForLoginDto.Password))
+            {
+                return BadRequest("Password cannot be null or empty");
+            }
 
             byte[] salt = Convert.FromBase64String(user.Salt);
             byte[] hashedPassword = HashPassword(userForLoginDto.Password, salt);
