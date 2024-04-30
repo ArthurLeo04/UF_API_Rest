@@ -23,8 +23,8 @@ namespace WebApplication1.Controllers
         }
 
         // GET: api/Friends
-        [HttpPost]
-        public ActionResult<IEnumerable<Users>> GetFriendsById([FromBody] Dictionary<String, String> token)
+        [HttpPost("GetFriendsByUser")]
+        public ActionResult<IEnumerable<Users>> GetFriendsByUser([FromBody] Dictionary<String, String> token)
         {
             var userToken = TokenParser.ParseToken(token["token"]);
 

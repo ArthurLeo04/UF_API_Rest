@@ -23,7 +23,7 @@ namespace WebApplication1.Controllers
         }
 
         // GET: api/UserAchievements
-        [HttpPost]
+        [HttpPost("GetAchievementsByUser")]
         public ActionResult<IEnumerable<Achievements>> GetAchievementsByUser([FromBody] Dictionary<String, String> token)
         {
             var userToken = TokenParser.ParseToken(token["token"]);
