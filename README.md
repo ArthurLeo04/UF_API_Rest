@@ -8,7 +8,7 @@
 ```shell
 docker-compose up
 ```
-- La commande va lire le docker-compose.yml, télécharger les images necéssaires (si pas déjà présentes) puis lancer les 3 dockers souhaités à savoir : PostgresSQL, Redis et l'API Web.
+- La commande va lire le docker-compose.yml, télécharger les images nécessaires (si pas déjà présentes) puis lancer les 3 dockers souhaités à savoir : PostgresSQL, Redis et l'API Web.
 
 ## API Web
 
@@ -32,7 +32,7 @@ Notre serveur et notre client Unreal **ne supporte pas** une adresse d'API dynam
 ### Premiers pas
 
 Pour pouvoir executer les commandes d'import-export, il est néscessaire d'avoir un compte "me" qui possède les droits appropriés.
-Il est donc néscessaire de suivre les étapes suivantes :
+Il est donc nécessaire de suivre les étapes suivantes :
 - télécharger postgres, le lancer, donner un mot de passe pour l'admin
 - ajouter le fichier d'executable postgres au PATH windows (le chemin c'est souvent ProgammesFiles/Postgres/16/bin)
 - dans un terminal lancer la commande "psql -U postgres", vous aurez besoin de votre mdp donné lors de la première étape
