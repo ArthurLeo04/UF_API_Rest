@@ -12,7 +12,9 @@ docker-compose up
 
 ## API Web
 
-Endpoint : localhost:5214
+**Endpoint** : localhost:5214/api
+
+**Documentation *(SwaggerUI)*** : [localhost:5214/swagger/index.html](http:localhost:5214/swagger/index.html)
 
 ## Connexion Unreal - API
 
