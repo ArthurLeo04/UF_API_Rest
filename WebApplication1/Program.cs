@@ -62,7 +62,8 @@ builder.Services.AddAuthentication(options =>
 builder.Services.AddHttpContextAccessor();
 
 // Redis
-builder.Services.AddSingleton<IConnectionMultiplexer>(ConnectionMultiplexer.Connect("localhost"));
+string redisHost = Environment.GetEnvironmentVariable("REDIS_HOST") ?? "localhost";
+builder.Services.AddSingleton<IConnectionMultiplexer>(ConnectionMultiplexer.Connect(redisHost));
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
