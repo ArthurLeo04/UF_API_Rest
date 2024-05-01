@@ -26,6 +26,9 @@ namespace WebApplication1.Controllers
         [HttpPost("GetAchievementsByUser")]
         public ActionResult<IEnumerable<Achievements>> GetAchievementsByUser([FromBody] Dictionary<String, String> token)
         {
+            // Print something
+            Console.WriteLine("GetAchievementsByUser");
+
             var userToken = TokenParser.ParseToken(token["token"]);
 
             if (userToken == null || !TokenParser.IsClient(userToken))
@@ -49,18 +52,43 @@ namespace WebApplication1.Controllers
                 .Where(a => userAchievements.Contains(a.Id))
                 .ToList();
 
-            return achievements;
+            var achievementsDict = new Dictionary<string, Achievements>();
+            foreach (var achievement in achievements)
+            {
+                achievementsDict.Add(achievement.Id.ToString(), achievement);
+            }
+            return Ok(achievementsDict);
         }
        
-        // POST: api/UserAchievements
+        // POST: api/UserAchievements/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        [HttpPost]
-        public ActionResult<UserAchievements> PostUserAchievements(UserAchievements UserAchievements)
+        [HttpPost("{achievementId}")]
+        public ActionResult<UserAchievements> PostUserAchievements([FromBody] Dictionary<String, String> token, Guid achievementId)
         {
-            _context.UserAchievements.Add(UserAchievements);
+            // Print the token
+            Console.WriteLine($"Le token : {token["token"]}");
+
+            var userToken = TokenParser.ParseToken(token["token"]);
+
+            if (userToken == null || !TokenParser.IsClient(userToken))
+            {
+                return Unauthorized();
+            }
+
+            Guid user = TokenParser.GetUserId(userToken);
+
+            // Check if the UserAchievements already exists
+            var userAchievements = _context.UserAchievements.Where(ua => (ua.IdUser == user && ua.IdAchievement == achievementId)).ToList();
+            if (userAchievements.Count > 0)
+            {
+                return Conflict();
+            }
+
+            var newAchievement = new UserAchievements(user, achievementId);
+            _context.UserAchievements.Add(newAchievement);
             _context.SaveChanges();
 
-            return CreatedAtAction(nameof(GetUserAchievements), new { id = UserAchievements.IdUser }, UserAchievements);
+            return CreatedAtAction(nameof(GetUserAchievements), new { id = user }, newAchievement);
         }
 
         // DELETE: api/UserAchievements/5/

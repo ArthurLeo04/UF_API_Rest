@@ -1,6 +1,8 @@
 ﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using WebApplication1.Data;
 using WebApplication1.Models;
 
 namespace WebApplication1.Controllers
@@ -79,6 +81,98 @@ namespace WebApplication1.Controllers
 
             //return CreatedAtAction("GetUsers", new { id = users.Id }, users);
             return CreatedAtAction(nameof(GetUsers), new { id = users.Id }, users);
+        }
+
+        private void GrantAchievement(string name, Guid user)
+        {
+            List<Guid> userAchievements = _context.UserAchievements
+                    .Where(ua => ua.IdUser == user)
+                    .Select(ua => ua.IdAchievement)
+                    .ToList();
+
+            // The new achievement
+            Achievements? achievement = _context.Achievements
+                .Where(a => a.Nom == name)
+                .FirstOrDefault();
+
+            if (achievement != null && !userAchievements.Contains(achievement.Id))
+            {
+                var newAchievement = new UserAchievements(user, achievement.Id);
+                _context.UserAchievements.Add(newAchievement);
+                _context.SaveChanges();
+            }
+        }
+
+        // POST : api/Users/Dead
+        [HttpPost("Dead")]
+        public IActionResult IncrementDeath([FromBody] Dictionary<String, String> token)
+        {
+            var userToken = TokenParser.ParseToken(token["token"]);
+
+            if (userToken == null)
+            {
+                return Unauthorized();
+            }
+
+            Guid user = TokenParser.GetUserId(userToken);
+            var users = _context.Users.Find(user);
+            if (users == null)
+            {
+                return NotFound();
+            }
+
+            users.DeathCount++;
+
+            // Update the user achievements
+            if (users.DeathCount >= 1)
+            {
+                GrantAchievement("The first of a long series", user);
+            }
+            if (users.DeathCount >= 10)
+            {
+                GrantAchievement("Immortal", user);
+            }
+
+
+            _context.SaveChanges();
+
+
+            return Ok();
+        }
+
+        // POST : api/Users/Kill
+        [HttpPost("Kill")]
+        public IActionResult IncrementKill([FromBody] Dictionary<String, String> token)
+        {
+            var userToken = TokenParser.ParseToken(token["token"]);
+
+            if (userToken == null)
+            {
+                return Unauthorized();
+            }
+
+            Guid user = TokenParser.GetUserId(userToken);
+            var users = _context.Users.Find(user);
+            if (users == null)
+            {
+                return NotFound();
+            }
+
+            users.KillCount++;
+
+            // Update the user achievements
+            if (users.KillCount >= 1)
+            {
+                GrantAchievement("Beginner Luck", user);
+            }
+            if (users.KillCount >= 10)
+            {
+                GrantAchievement("Rampage", user);
+            }
+
+            _context.SaveChanges();
+
+            return Ok();
         }
 
         // DELETE: api/Users/5
