@@ -9,6 +9,7 @@ services:
       POSTGRES_PASSWORD: password
     volumes:
       - postgres_data:/var/lib/postgresql/data
+      - ./database_structure.sql:/docker-entrypoint-initdb.d/database_structure.sql
     networks:
       - postgres_network
 
@@ -26,10 +27,7 @@ services:
     ports:
       - "8080:8080"
     environment:
-      POSTGRES_HOST: postgres
-      POSTGRES_DB: my_api_rest
-      POSTGRES_USER: me
-      POSTGRES_PASSWORD: password
+      POSTGRES_CONNECTION_STRING: Host=postgres;Port=5432;Database=my_api_rest;Username=me;Password=password
       REDIS_HOST: redis
     depends_on:
       - postgres

@@ -19,7 +19,7 @@ builder.Configuration.AddJsonFile("appsettings.json", optional: false, reloadOnC
 IConfigurationSection databaseSettings = builder.Configuration.GetSection("ConnectionStrings");
 IConfigurationSection jwtSettings = builder.Configuration.GetSection("Jwt");
 
-string connectionString = databaseSettings["DefaultConnection"];
+string connectionString = Environment.GetEnvironmentVariable("POSTGRES_CONNECTION_STRING") ?? builder.Configuration.GetConnectionString("DefaultConnection");
 
 // Add the database contexts
 builder.Services.AddDbContext<UsersContext>(options =>
