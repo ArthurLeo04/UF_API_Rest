@@ -14,6 +14,10 @@ docker-compose up
 
 Endpoint : localhost:5214
 
+## Connexion Unreal - API
+
+Notre serveur et notre client Unreal **ne supporte pas** une adresse d'API dynamique, donc les instances Unreal **doivent rouler sur la même machine** qui fait rouler les dockers (localhost only).
+
 ## DOC DEVELOPPEUR 
 
 ### La base de donnée
