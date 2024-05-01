@@ -231,10 +231,10 @@ INSERT INTO public.roles (role) VALUES ('server');
 --
 
 INSERT INTO public.users (id, email, username, password, salt, kill_count, death_count, rank, role) VALUES ('51e1b3e6-3e66-4787-bcd8-89253f3a0a1d', 'user5@email.com', 'user5', '9+g6zhWArx6WTR33mVWBuau7P/+g4bLYo3KY9Td5wVQ=', 'NEZGH2JSHbTFJvychuqX7w==', 0, 0, 'Bronze', 'client');
-INSERT INTO public.users (id, email, username, password, salt, kill_count, death_count, rank, role) VALUES ('3257e378-751d-4946-ad4d-38e1df83947f', 'user1@email.com', 'user1', 'ppnCWHuzwRWqNgBPg+xSP63WOw/EBza9cS5JUhBzCyU=', 'Azd7GSuoUlsY21YL2tMZzw==', 0, 0, 'Bronze', 'client');
-INSERT INTO public.users (id, email, username, password, salt, kill_count, death_count, rank, role) VALUES ('d4df66d9-1874-4219-87ec-35faf7a0828c', 'user2@email.com', 'user2', '5Qr0cRu08WN0XeR2YsDDnGYfS0EU6wlD/gqHnCMCAKk=', 'TNUqukhx5geYwQMBj7xd8A==', 0, 0, 'Bronze', 'client');
-INSERT INTO public.users (id, email, username, password, salt, kill_count, death_count, rank, role) VALUES ('b067a476-09e6-4869-98b7-f50f7d7d5604', 'user3@email.com', 'user3', 'vdkMYbz4PaNJKqwSGe1JhYaXrvX2bT6xzjCktq0p42w=', '0rp+rT6IaLSOygXSkXGJaQ==', 0, 0, 'Bronze', 'client');
-INSERT INTO public.users (id, email, username, password, salt, kill_count, death_count, rank, role) VALUES ('2aeea279-a2ac-4f3e-b1cf-7e6ae4cb45dd', 'user4@email.com', 'user4', '25vhxMza3OgvAAUrtWjVZ8AV+Vh3Tqv5Z9VIW6erjPI=', 'F8I16s5CAjLMajC6mEaQOw==', 0, 0, 'Bronze', 'client');
+INSERT INTO public.users (id, email, username, password, salt, kill_count, death_count, rank, role) VALUES ('3257e378-751d-4946-ad4d-38e1df83947f', 'user1@email.com', 'user1', 'ppnCWHuzwRWqNgBPg+xSP63WOw/EBza9cS5JUhBzCyU=', 'Azd7GSuoUlsY21YL2tMZzw==', 0, 0, 'Silver', 'client');
+INSERT INTO public.users (id, email, username, password, salt, kill_count, death_count, rank, role) VALUES ('d4df66d9-1874-4219-87ec-35faf7a0828c', 'user2@email.com', 'user2', '5Qr0cRu08WN0XeR2YsDDnGYfS0EU6wlD/gqHnCMCAKk=', 'TNUqukhx5geYwQMBj7xd8A==', 0, 0, 'Gold', 'client');
+INSERT INTO public.users (id, email, username, password, salt, kill_count, death_count, rank, role) VALUES ('b067a476-09e6-4869-98b7-f50f7d7d5604', 'user3@email.com', 'user3', 'vdkMYbz4PaNJKqwSGe1JhYaXrvX2bT6xzjCktq0p42w=', '0rp+rT6IaLSOygXSkXGJaQ==', 0, 0, 'Platinum', 'client');
+INSERT INTO public.users (id, email, username, password, salt, kill_count, death_count, rank, role) VALUES ('2aeea279-a2ac-4f3e-b1cf-7e6ae4cb45dd', 'user4@email.com', 'user4', '25vhxMza3OgvAAUrtWjVZ8AV+Vh3Tqv5Z9VIW6erjPI=', 'F8I16s5CAjLMajC6mEaQOw==', 0, 0, 'Diamond', 'client');
 
 
 --
