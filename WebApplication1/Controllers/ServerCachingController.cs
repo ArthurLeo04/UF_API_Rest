@@ -122,7 +122,7 @@ namespace WebApplication1.Controllers
             }
 
             decimal userPoints = RankToFloat(users.Rank) 
-                + (users.KDRatio * 10 -5); // Membre lié au kill/death ratio
+                + (users.KDRatio * 10 -5); // Membre liï¿½ au kill/death ratio
 
             // Get all servers from redis using function GetAllEntries
             var result = await GetAllEntries();
@@ -134,9 +134,9 @@ namespace WebApplication1.Controllers
                     return StatusCode(500, "Result is not a dictionary");
                 }
 
-                // Trouve le serveur dans le dictionnaire entries qui a la valeur la plus proche de userPoints et avec un nombre de joueurs inférieur à N
+                // Trouve le serveur dans le dictionnaire entries qui a la valeur la plus proche de userPoints et avec un nombre de joueurs infï¿½rieur ï¿½ N
                 var bestServer = entries.Values
-                    .Where(server => server.PlayerNumber < 6) // N = 6, hardcodé ici, mais pourrait être un paramètre
+                    .Where(server => server.PlayerNumber < 6) // N = 6, hardcodï¿½ ici, mais pourrait ï¿½tre un paramï¿½tre
                     .OrderBy(server => Math.Abs(RankToFloat(server.AverageRank) - userPoints))
                     .FirstOrDefault();
 
@@ -199,6 +199,9 @@ namespace WebApplication1.Controllers
 
                     // Update the nbPlayer attribute with the new value
                     existingServerCaching.PlayerNumber = newServerCaching.PlayerNumber;
+
+                    // Update the average Server rank with the new value
+                    existingServerCaching.AverageRank = newServerCaching.AverageRank;
 
                     // Serialize the modified ServerCaching object
                     var serializedValue = JsonConvert.SerializeObject(existingServerCaching);

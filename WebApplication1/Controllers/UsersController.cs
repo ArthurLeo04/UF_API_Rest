@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using WebApplication1.Models;
+using WebApplication1.Data;
 
 namespace WebApplication1.Controllers
 {
@@ -31,6 +32,23 @@ namespace WebApplication1.Controllers
             var users = _context.Users.Find(id);
 
             if (users == null)
+            {
+                return NotFound();
+            }
+
+            return users;
+        }
+
+        [HttpPost]
+        public ActionResult<Users> GetUserIdByJWT([FromBody] Dictionary<String, String> token)
+        {
+            var userToken = TokenParser.ParseToken(token["token"]);
+
+            Guid userId = TokenParser.GetUserId(userToken);
+
+            var users = _context.Users.Find(userId);
+
+            if(users == null)
             {
                 return NotFound();
             }
@@ -80,7 +98,7 @@ namespace WebApplication1.Controllers
             //return CreatedAtAction("GetUsers", new { id = users.Id }, users);
             return CreatedAtAction(nameof(GetUsers), new { id = users.Id }, users);
         }
-
+        
         // DELETE: api/Users/5
         [HttpDelete("{id}")]
         public IActionResult DeleteUsers(Guid id)
