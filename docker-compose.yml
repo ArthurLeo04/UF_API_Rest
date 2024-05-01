@@ -25,10 +25,11 @@ services:
     build: ./WebApplication1/
     container_name: 'APIUF'
     ports:
-      - "8080:8080"
+      - "5214:8080"
     environment:
       POSTGRES_CONNECTION_STRING: Host=postgres;Port=5432;Database=my_api_rest;Username=me;Password=password
       REDIS_HOST: redis
+      ASPNETCORE_ENVIRONMENT: "Development"
     depends_on:
       - postgres
       - redis
