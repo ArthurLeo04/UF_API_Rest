@@ -41,7 +41,7 @@ namespace WebApplication1.Controllers
             return users;
         }
 
-        [HttpPost]
+        [HttpPost("JWT")]
         public ActionResult<Users> GetUserIdByJWT([FromBody] Dictionary<String, String> token)
         {
             var userToken = TokenParser.ParseToken(token["token"]);
