@@ -170,8 +170,8 @@ ALTER TABLE public.users OWNER TO me;
 
 INSERT INTO public.achievements (id, nom, description, image) VALUES ('d9a7275a-e51e-4870-ab01-6272d1fd3989', 'Beginner Luck', 'Shoot your first opponent', 'https://url/to/achievement/image');
 INSERT INTO public.achievements (id, nom, description, image) VALUES ('39cb884f-016a-4722-bc32-6cf3c319c3ea', 'The first of a long series', 'Die for the first time', 'https://url/to/achievement/image');
-INSERT INTO public.achievements (id, nom, description, image) VALUES ('fe8afe63-5fc2-4d33-90e6-4444d04e1595', 'Rampage', 'Shoot a total of 10 opponents', 'https://url/to/achievement/image');
-INSERT INTO public.achievements (id, nom, description, image) VALUES ('ebe36b9f-11c8-41e5-8189-b3e14450d510', 'Immortal', 'Die a total of 10 times', 'https://url/to/achievement/image');
+INSERT INTO public.achievements (id, nom, description, image) VALUES ('fe8afe63-5fc2-4d33-90e6-4444d04e1595', 'Rampage', 'Shoot a total of 3 opponents', 'https://url/to/achievement/image');
+INSERT INTO public.achievements (id, nom, description, image) VALUES ('ebe36b9f-11c8-41e5-8189-b3e14450d510', 'Immortal', 'Die a total of 3 times', 'https://url/to/achievement/image');
 
 
 --
