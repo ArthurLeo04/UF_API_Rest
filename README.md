@@ -29,7 +29,6 @@ Notre serveur et notre client Unreal **ne supporte pas** une adresse d'API dynam
 - Nom : my_api_rest
 - MDP : password
 - User : me
-- MDP : password
 
 ### Premiers pas
 
