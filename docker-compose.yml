@@ -1,34 +1,35 @@
-version: '3.7'
 
 services:
   postgres:
     image: postgres:latest
+    container_name: 'PostgresUF'
     environment:
       POSTGRES_DB: my_api_rest
       POSTGRES_USER: me
       POSTGRES_PASSWORD: password
     volumes:
       - postgres_data:/var/lib/postgresql/data
+      - ./database_structure.sql:/docker-entrypoint-initdb.d/database_structure.sql
     networks:
       - postgres_network
 
   redis:
     image: redis:latest
+    container_name: 'RedisUF'
     volumes:
       - redis_data:/data
     networks:
       - redis_network
 
   api:
-    build: ./path/to/your/api
+    build: ./WebApplication1/
+    container_name: 'APIUF'
     ports:
-      - "8080:8080"
+      - "5214:8080"
     environment:
-      POSTGRES_HOST: postgres
-      POSTGRES_DB: my_api_rest
-      POSTGRES_USER: me
-      POSTGRES_PASSWORD: password
+      POSTGRES_CONNECTION_STRING: Host=postgres;Port=5432;Database=my_api_rest;Username=me;Password=password
       REDIS_HOST: redis
+      ASPNETCORE_ENVIRONMENT: "Development"
     depends_on:
       - postgres
       - redis
@@ -38,7 +39,9 @@ services:
 
 networks:
   redis_network:
+    driver: bridge
   postgres_network:
+    driver: bridge
 
 volumes:
   postgres_data:

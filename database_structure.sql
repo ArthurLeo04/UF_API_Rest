@@ -5,7 +5,7 @@
 -- Dumped from database version 16.2
 -- Dumped by pg_dump version 16.2
 
--- Started on 2024-04-23 16:55:14
+-- Started on 2024-04-30 13:41:48
 
 SET statement_timeout = 0;
 SET lock_timeout = 0;
@@ -19,7 +19,26 @@ SET client_min_messages = warning;
 SET row_security = off;
 
 --
--- TOC entry 2 (class 3079 OID 16414)
+-- TOC entry 6 (class 2615 OID 16579)
+-- Name: public; Type: SCHEMA; Schema: -; Owner: postgres
+--
+
+-- *not* creating schema, since initdb creates it
+
+
+ALTER SCHEMA public OWNER TO me;
+
+--
+-- TOC entry 4914 (class 0 OID 0)
+-- Dependencies: 6
+-- Name: SCHEMA public; Type: COMMENT; Schema: -; Owner: postgres
+--
+
+COMMENT ON SCHEMA public IS '';
+
+
+--
+-- TOC entry 2 (class 3079 OID 16580)
 -- Name: uuid-ossp; Type: EXTENSION; Schema: -; Owner: -
 --
 
@@ -27,7 +46,7 @@ CREATE EXTENSION IF NOT EXISTS "uuid-ossp" WITH SCHEMA public;
 
 
 --
--- TOC entry 4895 (class 0 OID 0)
+-- TOC entry 4916 (class 0 OID 0)
 -- Dependencies: 2
 -- Name: EXTENSION "uuid-ossp"; Type: COMMENT; Schema: -; Owner: 
 --
@@ -40,8 +59,8 @@ SET default_tablespace = '';
 SET default_table_access_method = heap;
 
 --
--- TOC entry 219 (class 1259 OID 16477)
--- Name: achievements; Type: TABLE; Schema: public; Owner: postgres
+-- TOC entry 216 (class 1259 OID 16591)
+-- Name: achievements; Type: TABLE; Schema: public; Owner: me
 --
 
 CREATE TABLE public.achievements (
@@ -52,11 +71,37 @@ CREATE TABLE public.achievements (
 );
 
 
-ALTER TABLE public.achievements OWNER TO postgres;
+ALTER TABLE public.achievements OWNER TO me;
 
 --
--- TOC entry 218 (class 1259 OID 16449)
--- Name: ranks; Type: TABLE; Schema: public; Owner: postgres
+-- TOC entry 217 (class 1259 OID 16597)
+-- Name: friend_requests; Type: TABLE; Schema: public; Owner: me
+--
+
+CREATE TABLE public.friend_requests (
+    sender uuid NOT NULL,
+    receiver uuid NOT NULL
+);
+
+
+ALTER TABLE public.friend_requests OWNER TO me;
+
+--
+-- TOC entry 218 (class 1259 OID 16600)
+-- Name: friends; Type: TABLE; Schema: public; Owner: me
+--
+
+CREATE TABLE public.friends (
+    user1 uuid NOT NULL,
+    user2 uuid NOT NULL
+);
+
+
+ALTER TABLE public.friends OWNER TO me;
+
+--
+-- TOC entry 219 (class 1259 OID 16603)
+-- Name: ranks; Type: TABLE; Schema: public; Owner: me
 --
 
 CREATE TABLE public.ranks (
@@ -64,10 +109,10 @@ CREATE TABLE public.ranks (
 );
 
 
-ALTER TABLE public.ranks OWNER TO postgres;
+ALTER TABLE public.ranks OWNER TO me;
 
 --
--- TOC entry 216 (class 1259 OID 16425)
+-- TOC entry 220 (class 1259 OID 16608)
 -- Name: roles; Type: TABLE; Schema: public; Owner: me
 --
 
@@ -79,8 +124,8 @@ CREATE TABLE public.roles (
 ALTER TABLE public.roles OWNER TO me;
 
 --
--- TOC entry 220 (class 1259 OID 16487)
--- Name: user_achievements; Type: TABLE; Schema: public; Owner: postgres
+-- TOC entry 221 (class 1259 OID 16613)
+-- Name: user_achievements; Type: TABLE; Schema: public; Owner: me
 --
 
 CREATE TABLE public.user_achievements (
@@ -89,10 +134,10 @@ CREATE TABLE public.user_achievements (
 );
 
 
-ALTER TABLE public.user_achievements OWNER TO postgres;
+ALTER TABLE public.user_achievements OWNER TO me;
 
 --
--- TOC entry 217 (class 1259 OID 16429)
+-- TOC entry 222 (class 1259 OID 16616)
 -- Name: users; Type: TABLE; Schema: public; Owner: me
 --
 
@@ -105,24 +150,53 @@ CREATE TABLE public.users (
     kill_count integer DEFAULT 0 NOT NULL,
     death_count integer DEFAULT 0 NOT NULL,
     rank text DEFAULT 'Bronze'::text NOT NULL,
-    role text NOT NULL
+    role text DEFAULT 'client'::text NOT NULL,
+    kd_ratio numeric GENERATED ALWAYS AS (
+CASE
+    WHEN ((kill_count = 0) AND (death_count = 0)) THEN (0)::numeric
+    WHEN (death_count = 0) THEN (1)::numeric
+    ELSE ((kill_count)::numeric / (NULLIF(death_count, 0))::numeric)
+END) STORED
 );
 
 
 ALTER TABLE public.users OWNER TO me;
 
 --
--- TOC entry 4887 (class 0 OID 16477)
--- Dependencies: 219
--- Data for Name: achievements; Type: TABLE DATA; Schema: public; Owner: postgres
+-- TOC entry 4902 (class 0 OID 16591)
+-- Dependencies: 216
+-- Data for Name: achievements; Type: TABLE DATA; Schema: public; Owner: me
 --
 
+INSERT INTO public.achievements (id, nom, description, image) VALUES ('d9a7275a-e51e-4870-ab01-6272d1fd3989', 'Beginner Luck', 'Shoot your first opponent', 'https://url/to/achievement/image');
+INSERT INTO public.achievements (id, nom, description, image) VALUES ('39cb884f-016a-4722-bc32-6cf3c319c3ea', 'The first of a long series', 'Die for the first time', 'https://url/to/achievement/image');
+INSERT INTO public.achievements (id, nom, description, image) VALUES ('fe8afe63-5fc2-4d33-90e6-4444d04e1595', 'Rampage', 'Shoot a total of 3 opponents', 'https://url/to/achievement/image');
+INSERT INTO public.achievements (id, nom, description, image) VALUES ('ebe36b9f-11c8-41e5-8189-b3e14450d510', 'Immortal', 'Die a total of 3 times', 'https://url/to/achievement/image');
 
 
 --
--- TOC entry 4886 (class 0 OID 16449)
+-- TOC entry 4903 (class 0 OID 16597)
+-- Dependencies: 217
+-- Data for Name: friend_requests; Type: TABLE DATA; Schema: public; Owner: me
+--
+
+INSERT INTO public.friend_requests (sender, receiver) VALUES ('3257e378-751d-4946-ad4d-38e1df83947f', 'd4df66d9-1874-4219-87ec-35faf7a0828c');
+INSERT INTO public.friend_requests (sender, receiver) VALUES ('3257e378-751d-4946-ad4d-38e1df83947f', 'b067a476-09e6-4869-98b7-f50f7d7d5604');
+INSERT INTO public.friend_requests (sender, receiver) VALUES ('2aeea279-a2ac-4f3e-b1cf-7e6ae4cb45dd', '3257e378-751d-4946-ad4d-38e1df83947f');
+
+
+--
+-- TOC entry 4904 (class 0 OID 16600)
 -- Dependencies: 218
--- Data for Name: ranks; Type: TABLE DATA; Schema: public; Owner: postgres
+-- Data for Name: friends; Type: TABLE DATA; Schema: public; Owner: me
+--
+
+
+
+--
+-- TOC entry 4905 (class 0 OID 16603)
+-- Dependencies: 219
+-- Data for Name: ranks; Type: TABLE DATA; Schema: public; Owner: me
 --
 
 INSERT INTO public.ranks (rank) VALUES ('Bronze');
@@ -133,8 +207,8 @@ INSERT INTO public.ranks (rank) VALUES ('Diamond');
 
 
 --
--- TOC entry 4884 (class 0 OID 16425)
--- Dependencies: 216
+-- TOC entry 4906 (class 0 OID 16608)
+-- Dependencies: 220
 -- Data for Name: roles; Type: TABLE DATA; Schema: public; Owner: me
 --
 
@@ -143,24 +217,29 @@ INSERT INTO public.roles (role) VALUES ('server');
 
 
 --
--- TOC entry 4888 (class 0 OID 16487)
--- Dependencies: 220
--- Data for Name: user_achievements; Type: TABLE DATA; Schema: public; Owner: postgres
+-- TOC entry 4907 (class 0 OID 16613)
+-- Dependencies: 221
+-- Data for Name: user_achievements; Type: TABLE DATA; Schema: public; Owner: me
 --
 
 
 
 --
--- TOC entry 4885 (class 0 OID 16429)
--- Dependencies: 217
+-- TOC entry 4908 (class 0 OID 16616)
+-- Dependencies: 222
 -- Data for Name: users; Type: TABLE DATA; Schema: public; Owner: me
 --
 
+INSERT INTO public.users (id, email, username, password, salt, kill_count, death_count, rank, role) VALUES ('51e1b3e6-3e66-4787-bcd8-89253f3a0a1d', 'user5@email.com', 'user5', '9+g6zhWArx6WTR33mVWBuau7P/+g4bLYo3KY9Td5wVQ=', 'NEZGH2JSHbTFJvychuqX7w==', 0, 0, 'Bronze', 'client');
+INSERT INTO public.users (id, email, username, password, salt, kill_count, death_count, rank, role) VALUES ('3257e378-751d-4946-ad4d-38e1df83947f', 'user1@email.com', 'user1', 'ppnCWHuzwRWqNgBPg+xSP63WOw/EBza9cS5JUhBzCyU=', 'Azd7GSuoUlsY21YL2tMZzw==', 0, 0, 'Silver', 'client');
+INSERT INTO public.users (id, email, username, password, salt, kill_count, death_count, rank, role) VALUES ('d4df66d9-1874-4219-87ec-35faf7a0828c', 'user2@email.com', 'user2', '5Qr0cRu08WN0XeR2YsDDnGYfS0EU6wlD/gqHnCMCAKk=', 'TNUqukhx5geYwQMBj7xd8A==', 0, 0, 'Gold', 'client');
+INSERT INTO public.users (id, email, username, password, salt, kill_count, death_count, rank, role) VALUES ('b067a476-09e6-4869-98b7-f50f7d7d5604', 'user3@email.com', 'user3', 'vdkMYbz4PaNJKqwSGe1JhYaXrvX2bT6xzjCktq0p42w=', '0rp+rT6IaLSOygXSkXGJaQ==', 0, 0, 'Platinum', 'client');
+INSERT INTO public.users (id, email, username, password, salt, kill_count, death_count, rank, role) VALUES ('2aeea279-a2ac-4f3e-b1cf-7e6ae4cb45dd', 'user4@email.com', 'user4', '25vhxMza3OgvAAUrtWjVZ8AV+Vh3Tqv5Z9VIW6erjPI=', 'F8I16s5CAjLMajC6mEaQOw==', 0, 0, 'Diamond', 'client');
 
 
 --
--- TOC entry 4732 (class 2606 OID 16483)
--- Name: achievements achievements_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+-- TOC entry 4730 (class 2606 OID 16628)
+-- Name: achievements achievements_pkey; Type: CONSTRAINT; Schema: public; Owner: me
 --
 
 ALTER TABLE ONLY public.achievements
@@ -168,8 +247,26 @@ ALTER TABLE ONLY public.achievements
 
 
 --
--- TOC entry 4734 (class 2606 OID 16485)
--- Name: achievements id; Type: CONSTRAINT; Schema: public; Owner: postgres
+-- TOC entry 4734 (class 2606 OID 16630)
+-- Name: friend_requests friend_requests_pkey; Type: CONSTRAINT; Schema: public; Owner: me
+--
+
+ALTER TABLE ONLY public.friend_requests
+    ADD CONSTRAINT friend_requests_pkey PRIMARY KEY (sender, receiver);
+
+
+--
+-- TOC entry 4736 (class 2606 OID 16632)
+-- Name: friends friends_pkey; Type: CONSTRAINT; Schema: public; Owner: me
+--
+
+ALTER TABLE ONLY public.friends
+    ADD CONSTRAINT friends_pkey PRIMARY KEY (user1, user2);
+
+
+--
+-- TOC entry 4732 (class 2606 OID 16634)
+-- Name: achievements id; Type: CONSTRAINT; Schema: public; Owner: me
 --
 
 ALTER TABLE ONLY public.achievements
@@ -177,8 +274,8 @@ ALTER TABLE ONLY public.achievements
 
 
 --
--- TOC entry 4730 (class 2606 OID 16455)
--- Name: ranks ranks_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+-- TOC entry 4738 (class 2606 OID 16636)
+-- Name: ranks ranks_pkey; Type: CONSTRAINT; Schema: public; Owner: me
 --
 
 ALTER TABLE ONLY public.ranks
@@ -186,7 +283,7 @@ ALTER TABLE ONLY public.ranks
 
 
 --
--- TOC entry 4720 (class 2606 OID 16467)
+-- TOC entry 4740 (class 2606 OID 16638)
 -- Name: roles roles_name_key; Type: CONSTRAINT; Schema: public; Owner: me
 --
 
@@ -195,7 +292,7 @@ ALTER TABLE ONLY public.roles
 
 
 --
--- TOC entry 4722 (class 2606 OID 16471)
+-- TOC entry 4742 (class 2606 OID 16640)
 -- Name: roles roles_pkey; Type: CONSTRAINT; Schema: public; Owner: me
 --
 
@@ -204,8 +301,8 @@ ALTER TABLE ONLY public.roles
 
 
 --
--- TOC entry 4736 (class 2606 OID 16491)
--- Name: user_achievements user_achievements_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+-- TOC entry 4744 (class 2606 OID 16642)
+-- Name: user_achievements user_achievements_pkey; Type: CONSTRAINT; Schema: public; Owner: me
 --
 
 ALTER TABLE ONLY public.user_achievements
@@ -213,7 +310,7 @@ ALTER TABLE ONLY public.user_achievements
 
 
 --
--- TOC entry 4724 (class 2606 OID 16439)
+-- TOC entry 4746 (class 2606 OID 16644)
 -- Name: users users_email_key; Type: CONSTRAINT; Schema: public; Owner: me
 --
 
@@ -222,7 +319,7 @@ ALTER TABLE ONLY public.users
 
 
 --
--- TOC entry 4726 (class 2606 OID 16441)
+-- TOC entry 4748 (class 2606 OID 16646)
 -- Name: users users_pkey; Type: CONSTRAINT; Schema: public; Owner: me
 --
 
@@ -231,7 +328,7 @@ ALTER TABLE ONLY public.users
 
 
 --
--- TOC entry 4728 (class 2606 OID 16443)
+-- TOC entry 4750 (class 2606 OID 16648)
 -- Name: users users_username_key; Type: CONSTRAINT; Schema: public; Owner: me
 --
 
@@ -240,8 +337,8 @@ ALTER TABLE ONLY public.users
 
 
 --
--- TOC entry 4739 (class 2606 OID 16497)
--- Name: user_achievements id_achievement_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+-- TOC entry 4755 (class 2606 OID 16649)
+-- Name: user_achievements id_achievement_fkey; Type: FK CONSTRAINT; Schema: public; Owner: me
 --
 
 ALTER TABLE ONLY public.user_achievements
@@ -249,8 +346,8 @@ ALTER TABLE ONLY public.user_achievements
 
 
 --
--- TOC entry 4740 (class 2606 OID 16492)
--- Name: user_achievements id_user_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+-- TOC entry 4756 (class 2606 OID 16654)
+-- Name: user_achievements id_user_fkey; Type: FK CONSTRAINT; Schema: public; Owner: me
 --
 
 ALTER TABLE ONLY public.user_achievements
@@ -258,7 +355,43 @@ ALTER TABLE ONLY public.user_achievements
 
 
 --
--- TOC entry 4737 (class 2606 OID 16461)
+-- TOC entry 4751 (class 2606 OID 16674)
+-- Name: friend_requests receiver_fkey; Type: FK CONSTRAINT; Schema: public; Owner: me
+--
+
+ALTER TABLE ONLY public.friend_requests
+    ADD CONSTRAINT receiver_fkey FOREIGN KEY (receiver) REFERENCES public.users(id);
+
+
+--
+-- TOC entry 4752 (class 2606 OID 16664)
+-- Name: friend_requests sender_fkey; Type: FK CONSTRAINT; Schema: public; Owner: me
+--
+
+ALTER TABLE ONLY public.friend_requests
+    ADD CONSTRAINT sender_fkey FOREIGN KEY (sender) REFERENCES public.users(id);
+
+
+--
+-- TOC entry 4753 (class 2606 OID 16659)
+-- Name: friends user1_fkey; Type: FK CONSTRAINT; Schema: public; Owner: me
+--
+
+ALTER TABLE ONLY public.friends
+    ADD CONSTRAINT user1_fkey FOREIGN KEY (user1) REFERENCES public.users(id);
+
+
+--
+-- TOC entry 4754 (class 2606 OID 16669)
+-- Name: friends user2_fkey; Type: FK CONSTRAINT; Schema: public; Owner: me
+--
+
+ALTER TABLE ONLY public.friends
+    ADD CONSTRAINT user2_fkey FOREIGN KEY (user2) REFERENCES public.users(id);
+
+
+--
+-- TOC entry 4757 (class 2606 OID 16679)
 -- Name: users users_rank_fkey; Type: FK CONSTRAINT; Schema: public; Owner: me
 --
 
@@ -267,7 +400,7 @@ ALTER TABLE ONLY public.users
 
 
 --
--- TOC entry 4738 (class 2606 OID 16472)
+-- TOC entry 4758 (class 2606 OID 16684)
 -- Name: users users_role_fkey; Type: FK CONSTRAINT; Schema: public; Owner: me
 --
 
@@ -276,15 +409,16 @@ ALTER TABLE ONLY public.users
 
 
 --
--- TOC entry 4894 (class 0 OID 0)
+-- TOC entry 4915 (class 0 OID 0)
 -- Dependencies: 6
--- Name: SCHEMA public; Type: ACL; Schema: -; Owner: pg_database_owner
+-- Name: SCHEMA public; Type: ACL; Schema: -; Owner: postgres
 --
 
+REVOKE USAGE ON SCHEMA public FROM PUBLIC;
 GRANT ALL ON SCHEMA public TO me;
 
 
--- Completed on 2024-04-23 16:55:17
+-- Completed on 2024-04-30 13:41:52
 
 --
 -- PostgreSQL database dump complete
