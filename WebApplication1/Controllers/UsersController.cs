@@ -141,17 +141,6 @@ namespace WebApplication1.Controllers
 
             users.DeathCount++;
 
-            // Update the user achievements
-            if (users.DeathCount >= 1)
-            {
-                GrantAchievement("The first of a long series", user);
-            }
-            if (users.DeathCount >= 10)
-            {
-                GrantAchievement("Immortal", user);
-            }
-
-
             _context.SaveChanges();
 
 
@@ -177,16 +166,6 @@ namespace WebApplication1.Controllers
             }
 
             users.KillCount++;
-
-            // Update the user achievements
-            if (users.KillCount >= 1)
-            {
-                GrantAchievement("Beginner Luck", user);
-            }
-            if (users.KillCount >= 10)
-            {
-                GrantAchievement("Rampage", user);
-            }
 
             _context.SaveChanges();
 
