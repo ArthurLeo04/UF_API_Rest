@@ -1,5 +1,7 @@
 # UF_API_Rest
 
+Nous avons rédigé une petite [documentation](https://github.com/ArthurLeo04/UF_API_Rest/wiki) pour présenter notre base de donnée et la liste des requêtes de notre api.
+
 ## Lancer l'application
 
 - Naviguer dans le dossier où se trouve le docker-compose.yml
